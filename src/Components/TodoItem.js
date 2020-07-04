@@ -33,6 +33,13 @@ const iconStyles = {
 		fontSize: 16,
 		fontWeight: FontWeights.regular,
 		marginRight: 4,
+	},
+}
+const iconStylesRed = {
+	root: {
+		fontSize: 16,
+		fontWeight: FontWeights.regular,
+		marginRight: 4,
 		selectors: {
 			":hover": {
 				color: DefaultPalette.red,
@@ -111,26 +118,24 @@ const buttonSpinnerStyle = {
 	},
 }
 
-const cardTokens = { childrenMargin: 12 }
-const footerCardSectionTokens = { padding: "12px 0px 0px" }
 const TodoItem = ({ onComplete, onDelete, todo: { completed, title, description }, updateLoading, deleteLoading }) => {
 	const [modalShow, setModalShow] = useState(false)
 	return (
 		<Stack>
-			<Card tokens={cardTokens} styles={cardStyles}>
-				<Card.Section>
+			<Card styles={cardStyles} tokens={{ childrenGap: 0 }}>
+				<Card.Section tokens={{ padding: 12 }}>
 					<Text styles={titleTextStyles}>{title}</Text>
 					<Text variant="small" styles={descTextStyles}>
 						{description}
 					</Text>
 				</Card.Section>
-				<Card.Section horizontal styles={footerCardSectionStyles} tokens={footerCardSectionTokens}>
+				<Card.Section horizontal styles={footerCardSectionStyles} tokens={{ padding: '8px 12px' }}>
 					<ActionButton
 						text={
 							deleteLoading ? (
 								<Spinner size={SpinnerSize.small} styles={buttonSpinnerStyle} />
 							) : (
-								<Icon iconName="Delete" styles={iconStyles} />
+								<Icon iconName="Delete" styles={iconStylesRed} />
 							)
 						}
 						styles={actionButtonStyles}
