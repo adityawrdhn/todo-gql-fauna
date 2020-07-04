@@ -11,15 +11,18 @@ import {
 	Dialog,
 	DialogType,
 	DialogFooter,
+	Spinner,
+	SpinnerSize,
 } from "@fluentui/react"
 import { Card } from "@uifabric/react-cards"
+
 const titleTextStyles = {
 	root: {
 		color: DefaultPalette.black,
 		fontWeight: FontWeights.semibold,
 	},
 }
-const helpfulTextStyles = {
+const descTextStyles = {
 	root: {
 		color: DefaultPalette.blackTranslucent40,
 		fontWeight: FontWeights.regular,
@@ -27,9 +30,9 @@ const helpfulTextStyles = {
 }
 const iconStyles = {
 	root: {
-		color: DefaultPalette.themePrimaryS,
 		fontSize: 16,
 		fontWeight: FontWeights.regular,
+		marginRight: 4,
 		selectors: {
 			":hover": {
 				color: DefaultPalette.red,
@@ -41,18 +44,20 @@ const iconStylesWhite = {
 	root: {
 		color: DefaultPalette.white,
 		fontSize: 16,
+		marginRight: 4,
 		fontWeight: FontWeights.regular,
+	},
+}
+const cardStyles = {
+	root: {
+		backgroundColor: DefaultPalette.white,
+		marginBottom: 12,
+		maxWidth: "100%",
 	},
 }
 const footerCardSectionStyles = {
 	root: {
 		borderTop: "1px solid " + DefaultPalette.neutralLighter,
-	},
-}
-const backgroundImageCardSectionStyles = {
-	root: {
-		backgroundColor: DefaultPalette.white,
-		marginBottom: 12,
 	},
 }
 const actionButtonStyles = {
@@ -99,42 +104,65 @@ const deleteButtonStyles = {
 		},
 	},
 }
+const buttonSpinnerStyle = {
+	root: {
+		fontSize: 16,
+		marginRight: 4,
+	},
+}
 
 const cardTokens = { childrenMargin: 12 }
 const footerCardSectionTokens = { padding: "12px 0px 0px" }
-const TodoItem = ({ onComplete, onDelete, todo: { completed, title, description } }) => {
+const TodoItem = ({ onComplete, onDelete, todo: { completed, title, description }, updateLoading, deleteLoading }) => {
 	const [modalShow, setModalShow] = useState(false)
 	return (
 		<Stack>
-			<Card tokens={cardTokens} styles={backgroundImageCardSectionStyles}>
+			<Card tokens={cardTokens} styles={cardStyles}>
 				<Card.Section>
 					<Text styles={titleTextStyles}>{title}</Text>
-					<Text variant="small" styles={helpfulTextStyles}>
+					<Text variant="small" styles={descTextStyles}>
 						{description}
 					</Text>
 				</Card.Section>
 				<Card.Section horizontal styles={footerCardSectionStyles} tokens={footerCardSectionTokens}>
-					{completed && (
-						<DefaultButton onClick={() => onComplete()}>
-							<Icon iconName="Undo" styles={iconStyles} />
-							Uncomplete
-						</DefaultButton>
-					)}
-					{!completed && (
-						<PrimaryButton onClick={() => onComplete()}>
-							<Icon iconName="Checkmark" styles={iconStylesWhite} />
-							Complete
-						</PrimaryButton>
-					)}
-
-					<Stack.Item grow={1}>
-						<span />
-					</Stack.Item>
 					<ActionButton
-						text={<Icon iconName="Delete" styles={iconStyles} />}
+						text={
+							deleteLoading ? (
+								<Spinner size={SpinnerSize.small} styles={buttonSpinnerStyle} />
+							) : (
+								<Icon iconName="Delete" styles={iconStyles} />
+							)
+						}
 						styles={actionButtonStyles}
 						onClick={() => setModalShow(!modalShow)}
 					/>
+					<Stack.Item grow={1}>
+						<span />
+					</Stack.Item>
+					{completed &&
+						(updateLoading ? (
+							<DefaultButton type="button">
+								<Spinner size={SpinnerSize.small} styles={buttonSpinnerStyle} />
+								Uncomplete
+							</DefaultButton>
+						) : (
+							<DefaultButton onClick={() => onComplete()}>
+								<Icon iconName="Undo" styles={iconStyles} />
+								Uncomplete
+							</DefaultButton>
+						))}
+					{!completed &&
+						(updateLoading ? (
+							<PrimaryButton type="button">
+								<Spinner size={SpinnerSize.small} styles={buttonSpinnerStyle} />
+								Complete
+							</PrimaryButton>
+						) : (
+							<PrimaryButton onClick={() => onComplete()}>
+								<Icon iconName="Checkmark" styles={iconStylesWhite} />
+								Complete
+							</PrimaryButton>
+						))}
 				</Card.Section>
 			</Card>
 			<Dialog

@@ -1,10 +1,13 @@
-import React, { Fragment } from "react"
+import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 import { TODOS_QUERY } from "Graphql/QueryTodo"
 import { Stack, DefaultPalette } from "@fluentui/react"
 import AddTodo from "Components/AddTodo"
 import TodoList from "Components/TodoList"
-const sidebar = {
+import { useDispatch } from "react-redux"
+import { alertActions } from "Store/Action"
+import LoadingPage from "Components/LoadingPage"
+const sidebarStyles = {
 	root: {
 		alignItems: "start",
 		background: DefaultPalette.white,
@@ -16,7 +19,7 @@ const sidebar = {
 		height: "100vh",
 	},
 }
-const body = {
+const bodyStyles = {
 	root: {
 		alignItems: "start",
 		background: DefaultPalette.neutralLight,
@@ -25,38 +28,32 @@ const body = {
 		overflow: "hidden",
 		marginLeft: "300px !important",
 		padding: "16px 24px",
+		width: "100%",
+		minHeight: "100vh",
 	},
 }
 
-// Tokens definition
-const outerStackTokens = { childrenGap: 5 }
-const innerStackTokens = {
-	childrenGap: 5,
-	padding: 0,
-}
 const Home = () => {
-	const { loading, error, data: { todos: { data = [] } = {} } = {}, fetchMore } = useQuery(TODOS_QUERY, {
-		variables: { size: 100 },
+	const dispatch = useDispatch()
+	const { loading, data: { todos: { data = [] } = {} } = {} } = useQuery(TODOS_QUERY, {
+		variables: { size: 200 },
+		onError(error) {
+			dispatch(alertActions.openAlert(error))
+		},
 	})
-	console.log(data)
 	return (
-		<Fragment>
-			<Stack horizontal tokens={innerStackTokens}>
-				<Stack grow styles={sidebar}>
-					<Stack verticalAlign="start">
-						<h1>Todo App using Fluent UI & React</h1>
-						<AddTodo />
-					</Stack>
-				</Stack>
-				<Stack grow styles={body}>
-					<Stack verticalAlign="start">
-						{loading && "Loading..."}
-						{error && "Something went wrong"}
-						{data.length && <TodoList data={data} />}
-					</Stack>
+		<Stack horizontal>
+			<Stack styles={sidebarStyles}>
+				<Stack verticalAlign="start">
+					<h2>Todo App using React, GraphQL, and Fluent-UI</h2>
+					<AddTodo />
 				</Stack>
 			</Stack>
-		</Fragment>
+			<Stack styles={bodyStyles}>
+				{loading && <LoadingPage />}
+				{data && data.length && <TodoList data={data} />}
+			</Stack>
+		</Stack>
 	)
 }
 

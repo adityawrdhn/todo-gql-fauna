@@ -1,11 +1,15 @@
-import React from "react"
+import React, { useState } from "react"
 import { Stack, Label, Text, DefaultPalette, FontWeights } from "@fluentui/react"
 import { useMutation } from "@apollo/react-hooks"
 import { UPDATE_TODO_MUTATION, DELETE_TODO_MUTATION } from "Graphql/MutationTodo"
 import { TODOS_QUERY } from "Graphql/QueryTodo"
 import TodoItem from "./TodoItem"
+import { useDispatch } from "react-redux"
+import { alertActions } from "Store/Action"
+
 const innerStackTokens = {
 	childrenGap: 24,
+	width: "100%",
 }
 const titleTextStyles = {
 	root: {
@@ -14,44 +18,69 @@ const titleTextStyles = {
 		fontSize: 24,
 	},
 }
+const rowStyles = {
+	root: {
+		width: "100%",
+	},
+}
+const colStyles = {
+	root: {
+		width: "100%",
+		background: DefaultPalette.neutralLighter,
+		padding: 16,
+	},
+}
 const TodoList = ({ data }) => {
-	const [updateTodo] = useMutation(UPDATE_TODO_MUTATION, {
+	const [loadingId, setLoadingId] = useState("")
+	const dispatch = useDispatch()
+	const [updateTodo, { loading: updateLoading }] = useMutation(UPDATE_TODO_MUTATION, {
 		onError(error) {
-			console.log(error)
+			dispatch(alertActions.openAlert(error))
 		},
 		update(cache, { data: { updateTodo } }) {
-			let { todos } = cache.readQuery({ query: TODOS_QUERY, variables: { size: 100 } })
-			const index = todos.data.findIndex(({ _id }) => _id === updateTodo._id)
-			if (index > -1) {
-				todos.data[index] = updateTodo
+			if (updateTodo) {
+				let { todos } = cache.readQuery({ query: TODOS_QUERY, variables: { size: 200 } })
+				const index = todos.data.findIndex(({ _id }) => _id === updateTodo._id)
+				if (index > -1) {
+					todos.data[index] = updateTodo
+				}
+				cache.writeQuery({
+					query: TODOS_QUERY,
+					data: { todos: { ...todos } },
+				})
 			}
-			cache.writeQuery({
-				query: TODOS_QUERY,
-				data: { todos: { ...todos } },
-			})
+		},
+		onCompleted() {
+			setLoadingId("")
 		},
 	})
-	const [deleteTodo] = useMutation(DELETE_TODO_MUTATION, {
+	const [deleteTodo, { loading: deleteLoading }] = useMutation(DELETE_TODO_MUTATION, {
 		onError(error) {
-			console.log(error)
+			dispatch(alertActions.openAlert(error))
 		},
 		update(cache, { data: { deleteTodo } }) {
-			let { todos } = cache.readQuery({ query: TODOS_QUERY, variables: { size: 100 } })
-			const index = todos.data.findIndex(({ _id }) => _id === deleteTodo._id)
-			if (index > -1) {
-				todos.data.splice(index, 1)
+			if (deleteTodo) {
+				let { todos } = cache.readQuery({ query: TODOS_QUERY, variables: { size: 200 } })
+				const index = todos.data.findIndex(({ _id }) => _id === deleteTodo._id)
+				if (index > -1) {
+					todos.data.splice(index, 1)
+				}
+				const data = [...todos.data]
+				cache.writeQuery({
+					query: TODOS_QUERY,
+					data: { todos: { ...todos, data } },
+				})
 			}
-			const data = [...todos.data]
-			cache.writeQuery({
-				query: TODOS_QUERY,
-				data: { todos: { ...todos, data } },
-			})
+		},
+		onCompleted() {
+			setLoadingId("")
 		},
 	})
 	return (
-		<Stack horizontal tokens={innerStackTokens}>
-			<Stack.Item grow={1}>
+		<Stack horizontal tokens={innerStackTokens} styles={rowStyles}>
+			<Stack grow={1} styles={colStyles}>
 				<Text styles={titleTextStyles}>Todos</Text>
+				<hr />
 				{data.filter((key) => !key.completed).length > 0 ? (
 					data
 						.filter((key) => !key.completed)
@@ -59,23 +88,30 @@ const TodoList = ({ data }) => {
 							<TodoItem
 								todo={{ _id, title, description, created, completed }}
 								key={index}
-								onComplete={() =>
+								onComplete={() => {
+									setLoadingId(_id)
 									updateTodo({
 										variables: {
 											id: _id,
 											data: { title, description, created, completed: !completed },
 										},
 									})
-								}
-								onDelete={() => deleteTodo({ variables: { id: _id } })}
+								}}
+								onDelete={() => {
+									setLoadingId(_id)
+									deleteTodo({ variables: { id: _id } })
+								}}
+								updateLoading={loadingId === _id && updateLoading}
+								deleteLoading={loadingId === _id && deleteLoading}
 							/>
 						))
 				) : (
-					<Label>Todo list is empty...</Label>
+					<Label>You have no active todo</Label>
 				)}
-			</Stack.Item>
-			<Stack.Item grow={1}>
+			</Stack>
+			<Stack grow={1} styles={colStyles}>
 				<Text styles={titleTextStyles}>Complete</Text>
+				<hr />
 				{data.filter((key) => key.completed).length > 0 ? (
 					data
 						.filter((key) => key.completed)
@@ -83,21 +119,27 @@ const TodoList = ({ data }) => {
 							<TodoItem
 								todo={{ _id, title, description, created, completed }}
 								key={index}
-								onComplete={() =>
+								onComplete={() => {
+									setLoadingId(_id)
 									updateTodo({
 										variables: {
 											id: _id,
 											data: { title, description, created, completed: !completed },
 										},
 									})
-								}
-								onDelete={() => deleteTodo({ variables: { id: _id } })}
+								}}
+								onDelete={() => {
+									setLoadingId(_id)
+									deleteTodo({ variables: { id: _id } })
+								}}
+								updateLoading={loadingId === _id && updateLoading}
+								deleteLoading={loadingId === _id && deleteLoading}
 							/>
 						))
 				) : (
-					<Label>Todo list is empty...</Label>
+					<Label>You have no completed todo</Label>
 				)}
-			</Stack.Item>
+			</Stack>
 		</Stack>
 	)
 }

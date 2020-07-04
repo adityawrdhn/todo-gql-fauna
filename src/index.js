@@ -1,16 +1,21 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import "./index.css"
-import App from "./App"
-import * as serviceWorker from "./serviceWorker"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { Fabric, initializeIcons } from "@fluentui/react"
+import { Provider } from "react-redux"
 import client from "./Graphql"
+import App from "./App"
+import store from "Store"
+import './index.css'
+import * as serviceWorker from "./serviceWorker"
+
 initializeIcons()
 ReactDOM.render(
 	<Fabric>
 		<ApolloProvider client={client}>
-			<App />
+			<Provider store={store}>
+				<App />
+			</Provider>
 		</ApolloProvider>
 	</Fabric>,
 	document.getElementById("root")

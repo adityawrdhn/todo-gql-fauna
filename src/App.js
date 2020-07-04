@@ -1,13 +1,14 @@
-import React, { lazy, Suspense, Fragment } from "react"
-// import logo from "./logo.svg"
-import "./App.css"
+import React, { lazy, Suspense } from "react"
+import LoadingPage from "Components/LoadingPage"
 const Home = lazy(() => import("./Containers/Home"))
+const AlertModal = lazy(() => import("./Components/AlertModal"))
 const App = () => {
-    return (
-        <Suspense fallback={<Fragment>Loading...</Fragment>}>
-            <Home />
-        </Suspense>
-    )
+	return (
+		<Suspense fallback={<LoadingPage />}>
+			<Home />
+			<AlertModal />
+		</Suspense>
+	)
 }
 
 export default App
