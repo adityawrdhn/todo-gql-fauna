@@ -56,7 +56,7 @@ const Home = () => {
 			root: {
 				position: sidebarOpen ? "relative" : "fixed",
 				marginLeft: sidebarOpen ? "0px !important" : "300px !important",
-				backgroundColor: sidebarOpen ? DefaultPalette.neutralLighter : "transparent",
+				backgroundColor: "transparent",
 			},
 		}),
 		[sidebarOpen]

@@ -175,7 +175,7 @@ const TodoItem = ({ onComplete, onDelete, todo: { completed, title, description 
 				dialogContentProps={{
 					type: DialogType.normal,
 					title: "Delete",
-					subText: "Are you sure you want to delete this item? This action cannot be undone.",
+					subText: "Are you sure want to delete this item? This action cannot be undone.",
 				}}
 				modalProps={{
 					isBlocking: false,

@@ -46,31 +46,34 @@ const AddTodo = () => {
 	}
 
 	return (
-		<Stack tokens={{ childrenGap: 16 }}>
-			<TextField label="Title" placeholder="Title" name="title" value={title} onChange={handleChange} />
-			<TextField
-				label="Description"
-				multiline
-				rows={3}
-				name="description"
-				placeholder="Description"
-				autoAdjustHeight
-				value={description}
-				onChange={handleChange}
-			/>
-			{loading && (
-				<PrimaryButton type="button">
-					<Spinner size={SpinnerSize.small} styles={buttonWidgetStyles} />
-					Loading
-				</PrimaryButton>
-			)}
-			{!loading && (
-				<PrimaryButton onClick={handleSubmit}>
-					<Icon iconName="Add" styles={buttonWidgetStyles} />
-					Add New Todo
-				</PrimaryButton>
-			)}
-		</Stack>
+		<form onSubmit={handleSubmit}>
+			<Stack tokens={{ childrenGap: 16 }}>
+				<TextField label="Title" placeholder="Title" name="title" value={title} onChange={handleChange} required/>
+				<TextField
+					label="Description"
+					multiline
+					rows={3}
+					name="description"
+					placeholder="Description"
+					autoAdjustHeight
+					value={description}
+					onChange={handleChange}
+					resizable={false}
+				/>
+				{loading && (
+					<PrimaryButton type="button">
+						<Spinner size={SpinnerSize.small} styles={buttonWidgetStyles} />
+						Loading
+					</PrimaryButton>
+				)}
+				{!loading && (
+					<PrimaryButton type="submit">
+						<Icon iconName="Add" styles={buttonWidgetStyles} />
+						Add New Todo
+					</PrimaryButton>
+				)}
+			</Stack>
+		</form>
 	)
 }
 

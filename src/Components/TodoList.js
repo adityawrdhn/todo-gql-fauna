@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Stack, Label, Text, DefaultPalette, FontWeights } from "@fluentui/react"
+import { Stack, Label, Text, DefaultPalette, FontWeights, Separator } from "@fluentui/react"
 import { useMutation } from "@apollo/react-hooks"
 import { UPDATE_TODO_MUTATION, DELETE_TODO_MUTATION } from "Graphql/MutationTodo"
 import { TODOS_QUERY } from "Graphql/QueryTodo"
@@ -28,6 +28,17 @@ const colStyles = {
 		width: "100%",
 		background: DefaultPalette.neutralLighter,
 		padding: 16,
+		flexBasis: 0,
+		height: "fit-content",
+	},
+}
+const separatorStyles = {
+	root: {
+		selectors: {
+			"::before": {
+				backgroundColor: DefaultPalette.neutralLight,
+			},
+		},
 	},
 }
 const TodoList = ({ data }) => {
@@ -77,10 +88,10 @@ const TodoList = ({ data }) => {
 		},
 	})
 	return (
-		<Stack horizontal tokens={innerStackTokens} styles={rowStyles}>
-			<Stack grow={1} styles={colStyles}>
+		<Stack horizontal wrap horizontalAlign="space-around" tokens={innerStackTokens} styles={rowStyles}>
+			<Stack.Item grow={2} shrink={1} styles={colStyles}>
 				<Text styles={titleTextStyles}>Todos</Text>
-				<hr />
+				<Separator styles={separatorStyles} />
 				{data.filter((key) => !key.completed).length > 0 ? (
 					data
 						.filter((key) => !key.completed)
@@ -108,10 +119,10 @@ const TodoList = ({ data }) => {
 				) : (
 					<Label>You have no active todo</Label>
 				)}
-			</Stack>
-			<Stack grow={1} styles={colStyles}>
+			</Stack.Item>
+			<Stack.Item grow={2} shrink={1} styles={colStyles}>
 				<Text styles={titleTextStyles}>Complete</Text>
-				<hr />
+				<Separator styles={separatorStyles} />
 				{data.filter((key) => key.completed).length > 0 ? (
 					data
 						.filter((key) => key.completed)
@@ -139,7 +150,7 @@ const TodoList = ({ data }) => {
 				) : (
 					<Label>You have no completed todo</Label>
 				)}
-			</Stack>
+			</Stack.Item>
 		</Stack>
 	)
 }
