@@ -3,7 +3,7 @@ import ReactDOM from "react-dom"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { Fabric, initializeIcons } from "@fluentui/react"
 import { Provider } from "react-redux"
-import client from "./Graphql"
+import client from "./Gql"
 import App from "./App"
 import store from "Store"
 import './index.css'

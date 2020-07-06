@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react"
 import { useQuery } from "@apollo/react-hooks"
-import { TODOS_QUERY } from "Graphql/QueryTodo"
+import { TODOS_QUERY } from "Gql/QueryTodo"
 import { Stack, DefaultPalette, IconButton } from "@fluentui/react"
 import AddTodo from "Components/AddTodo"
 import TodoList from "Components/TodoList"

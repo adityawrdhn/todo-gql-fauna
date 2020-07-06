@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import { Stack, TextField, PrimaryButton, Icon, Spinner, SpinnerSize } from "@fluentui/react"
 import { useMutation } from "@apollo/react-hooks"
-import { ADD_TODO_MUTATION } from "Graphql/MutationTodo"
-import { TODOS_QUERY } from "Graphql/QueryTodo"
+import { ADD_TODO_MUTATION } from "Gql/MutationTodo"
+import { TODOS_QUERY } from "Gql/QueryTodo"
 import { useDispatch } from "react-redux"
 import { alertActions } from "Store/Action"
 
