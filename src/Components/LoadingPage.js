@@ -14,7 +14,7 @@ const loadingStyles = {
 
 const LoadingPage = () => (
 	<Stack styles={loadingStyles}>
-		<Spinner size={SpinnerSize.large} />
+		<Spinner size={SpinnerSize.large} label="Loading..."/>
 	</Stack>
 )
 
