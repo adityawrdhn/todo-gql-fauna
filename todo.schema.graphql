@@ -1,0 +1,9 @@
+type Todo {
+    title: String!
+    description: String
+    completed: Boolean
+    created: String!
+}
+type Query {
+    todos: [Todo!]
+}
